@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import SQLite3
 
 // MARK: - 极简 SQLite 读取器（使用系统 libsqlite3）
