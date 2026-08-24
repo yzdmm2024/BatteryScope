@@ -52,7 +52,8 @@ final class SQLiteDB {
                 var row: [String: Any] = [:]
                 let count = sqlite3_column_count(stmt)
                 for i in 0..<count {
-                    let name = String(cString: sqlite_column_name(stmt, i))
+                    guard let namePtr = sqlite3_column_name(stmt, i) else { continue }
+                    let name = String(cString: namePtr)
                     switch sqlite3_column_type(stmt, i) {
                     case SQLITE_INTEGER: row[name] = Int(sqlite3_column_int64(stmt, i))
                     case SQLITE_FLOAT:   row[name] = Double(sqlite3_column_double(stmt, i))
