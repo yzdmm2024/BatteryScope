@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>电量透视 · 预览</title>
+<style>
+  :root{
+    --ink:#2B2F3A; --sub:#7A8090; --soft:#8A90A0;
+    --blue:#6FA8FF; --mint:#7FD1AE; --amber:#F0A04B;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{
+    margin:0; min-height:100vh; font-family:-apple-system,"PingFang SC","Segoe UI",system-ui,sans-serif;
+    background:linear-gradient(180deg,#E9EEFA 0%,#F5ECF6 50%,#E8F4F0 100%);
+    background-attachment:fixed; color:var(--ink); padding:18px 14px 60px;
+  }
+  .wrap{max-width:480px; margin:0 auto; display:flex; flex-direction:column; gap:18px;}
+  .card{
+    background:rgba(255,255,255,.30);
+    backdrop-filter:blur(22px) saturate(160%);
+    -webkit-backdrop-filter:blur(22px) saturate(160%);
+    border:none; border-radius:24px;
+    box-shadow:0 8px 24px rgba(20,30,60,.06);
+    padding:18px;
+  }
+  .title{font-size:22px; font-weight:600; letter-spacing:.2px;}
+  .sub{font-size:13px; color:var(--sub); font-weight:500; margin-top:4px;}
+  .row{display:flex; align-items:center; gap:10px;}
+  .ring{
+    width:62px; height:62px; border-radius:50%;
+    background:conic-gradient(var(--mint),var(--blue) 70%,rgba(255,255,255,.5) 0);
+    display:flex; align-items:center; justify-content:center; flex:none;
+    position:relative;
+  }
+  .ring::after{content:""; position:absolute; inset:9px; border-radius:50%; background:rgba(255,255,255,.55);}
+  .ring span{position:relative; z-index:1; font-weight:700; font-size:15px;}
+  .metrics{display:flex; gap:14px; margin-top:4px;}
+  .metric{flex:1; background:rgba(255,255,255,.35); border-radius:16px; padding:12px;}
+  .metric .v{font-size:20px; font-weight:700;}
+  .metric .l{font-size:12px; color:var(--soft); font-weight:500;}
+  .warn{display:flex; align-items:center; gap:8px; background:rgba(251,231,210,.7); border-radius:14px; padding:10px;
+        font-size:14px; font-weight:600; color:#C0632A;}
+  .chips{display:flex; gap:10px; overflow-x:auto; padding-bottom:4px;}
+  .chip{flex:none; display:flex; align-items:center; gap:8px; background:rgba(255,255,255,.4); border-radius:16px; padding:8px 12px;}
+  .chip .rk{width:22px; height:22px; border-radius:50%; background:rgba(111,168,255,.85); color:#fff; font-weight:700; font-size:13px;
+           display:flex; align-items:center; justify-content:center;}
+  .chip .nm{font-size:13px; font-weight:600;}
+  .chip .en{font-size:11px; color:var(--soft);}
+  .hour-h{display:flex; align-items:center; justify-content:space-between;}
+  .hour-h .h{font-size:18px; font-weight:600;}
+  .hour-h .d{font-size:13px; color:var(--sub); background:rgba(255,255,255,.4); border-radius:999px; padding:5px 10px; font-weight:500;}
+  .grid{display:grid; grid-template-columns:repeat(12,1fr); gap:3px; margin-top:2px;}
+  .cell{height:12px; border-radius:3px; background:rgba(221,227,238,.55);}
+  .glabel{font-size:11px; color:#9AA0B0; margin-top:8px;}
+  .app{margin-top:9px;}
+  .app .top{display:flex; align-items:center; gap:8px;}
+  .app .nm{font-size:14px; font-weight:600;}
+  .badge{font-size:10px; font-weight:700; color:#fff; background:var(--amber); border-radius:999px; padding:2px 6px;}
+  .badge.fg{font-weight:500; color:var(--sub); background:rgba(255,255,255,.5);}
+  .app .en{margin-left:auto; font-size:13px; font-weight:700;}
+  .bar{height:9px; border-radius:7px; background:rgba(255,255,255,.35); margin-top:5px; overflow:hidden;}
+  .bar > i{display:block; height:100%; border-radius:7px; background:var(--blue);}
+  .bar > i.bg{background:var(--amber);}
+  .btn{display:inline-flex; align-items:center; gap:6px; color:#fff; font-weight:600; font-size:14px;
+       background:linear-gradient(90deg,var(--blue),var(--mint)); border:none; border-radius:999px;
+       padding:10px 18px; cursor:pointer; transition:transform .15s ease;}
+  .btn:active{transform:scale(.95);}
+  .status{font-size:13px; color:#5A6070; font-weight:500; line-height:1.5;}
+  details{font-size:12px; color:var(--sub);}
+  details summary{cursor:pointer; font-weight:500;}
+  pre{font-size:10px; white-space:pre-wrap; color:var(--soft); max-height:160px; overflow:auto; margin:8px 0 0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="card">
+    <div class="row">
+      <div>
+        <div class="title">今日电量透视</div>
+        <div class="sub">过去 24 小时 · 系统真实数据</div>
+      </div>
+      <div style="margin-left:auto" class="ring"><span>82%</span></div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric"><div class="v">38.4%</div><div class="l">总掉电</div></div>
+      <div class="metric"><div class="v">24h</div><div class="l">记录时段</div></div>
+      <div class="metric"><div class="v">9</div><div class="l">活跃 App</div></div>
+    </div>
+
+    <div class="warn" style="margin-top:14px">
+      ⚠️ 后台耗电大户：com.chaos.planet.gp
+    </div>
+
+    <div style="margin-top:14px">
+      <div class="sub" style="margin-bottom:8px">耗电排行</div>
+      <div class="chips">
+        <div class="chip"><div class="rk">1</div><div><div class="nm">抖音</div><div class="en">920</div></div></div>
+        <div class="chip"><div class="rk">2</div><div><div class="nm">汽水音乐</div><div class="en">610</div></div></div>
+        <div class="chip"><div class="rk">3</div><div><div class="nm">Chaos Heroes</div><div class="en">540</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 示例小时卡片 -->
+  <div class="card">
+    <div class="hour-h"><div class="h">14:00</div><div class="d">掉电 4.20%</div></div>
+    <div class="grid" id="grid"></div>
+    <script>
+      (function(){
+        const grid=document.getElementById('grid');
+        const hot=[0,1,2,3,8,9,30,31,45,46,47];
+        for(let i=0;i<60;i++){
+          const v=hot.includes(i)?0.9:(i%7===0?0.4:0.08);
+          const c=document.createElement('div');
+          c.className='cell';
+          c.style.background = v<=0.1 ? 'rgba(221,227,238,.55)'
+            : 'rgba(255,159,107,'+(0.25+0.7*v).toFixed(3)+')';
+          grid.appendChild(c);
+        }
+      })();
+    </script>
+    <div class="glabel">每分钟掉电（亮度越高掉得越快）</div>
+
+    <div class="app">
+      <div class="top"><div class="nm">抖音</div><div class="badge fg">前台</div><div class="en">320</div></div>
+      <div class="bar"><i style="width:100%"></i></div>
+    </div>
+    <div class="app">
+      <div class="top"><div class="nm">Chaos Heroes</div><div class="badge">后台</div><div class="en">180</div></div>
+      <div class="bar"><i class="bg" style="width:56%"></i></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="status">✅ 已读取系统电池数据库（与「设置→电池」同源）。注：iOS 仅按「每小时」聚合每个 App 的耗电，分钟级为整机真实掉电曲线。</div>
+    <button class="btn" style="margin-top:12px">↻ 重新读取</button>
+    <details style="margin-top:12px"><summary>数据库探测明细（如读不到数据请截图发我）</summary>
+      <pre>▸ /private/var/mobile/Library/BatteryLife/BatteryLife.sqlite
+   表: ZLBatteryAppEnergy, ZLBatteryLevel, ...
+   选用设备表: ZLBatteryLevel
+   选用 App 表: ZLBatteryAppEnergy</pre>
+    </details>
+  </div>
+
+</div>
+</body>
+</html>

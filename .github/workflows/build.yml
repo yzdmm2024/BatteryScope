@@ -1,0 +1,48 @@
+name: Build IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer 2>/dev/null || true
+
+      - name: Install xcodegen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Archive (ad-hoc, TrollStore 友好)
+        run: |
+          xcodebuild archive \
+            -project BatteryScope.xcodeproj \
+            -scheme BatteryScope \
+            -configuration Release \
+            -archivePath build/BatteryScope.xcarchive \
+            -destination 'generic/platform=iOS' \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=YES \
+            PROVISIONING_PROFILE_SPECIFIER="" \
+            ENABLE_BITCODE=NO
+
+      - name: Package IPA
+        run: |
+          mkdir -p build/Payload
+          cp -r "build/BatteryScope.xcarchive/Products/Applications/BatteryScope.app" build/Payload/
+          cd build && zip -r BatteryScope.ipa Payload
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: BatteryScope.ipa
+          path: build/BatteryScope.ipa

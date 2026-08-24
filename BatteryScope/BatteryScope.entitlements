@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- TrollStore 利用 CoreTrust 漏洞，可携带任意 entitlements 并被系统信任。
+	     无沙盒权限让 App 能读取系统电池数据库（/private/var/mobile/Library/BatteryLife/...）。 -->
+	<key>com.apple.private.security.no-sandbox</key>
+	<true/>
+	<key>com.apple.private.skip-library-validation</key>
+	<true/>
+	<key>get-task-allow</key>
+	<true/>
+</dict>
+</plist>

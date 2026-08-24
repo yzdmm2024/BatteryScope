@@ -1,0 +1,25 @@
+# Xcode / build artifacts
+.build/
+DerivedData/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+*.moved-aside
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserdata/
+
+# Product outputs
+*.ipa
+*.app
+*.dSYM.zip
+Payload/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+
+# WorkBuddy project data (not part of the app)
+.workbuddy/
