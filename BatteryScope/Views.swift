@@ -100,9 +100,13 @@ struct HeaderCard: View {
                         Text("今日电量透视")
                             .font(.system(size: 22, weight: .semibold, design: .rounded))
                             .foregroundColor(Color(hex: "#2B2F3A"))
-                        Text("过去 24 小时 · \(provider.source.rawValue)")
+                        Text("\(provider.deviceProfile.modelName) · iOS \(provider.deviceProfile.systemVersion)")
                             .font(.system(size: 13, weight: .medium))
                             .foregroundColor(Color(hex: "#7A8090"))
+                        Text("\(provider.source.rawValue) · \(provider.jailbreakStatus)")
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(Color(hex: "#9AA0B0"))
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                     Spacer()
                     BatteryRing(pct: provider.currentBatteryPct)
@@ -110,7 +114,7 @@ struct HeaderCard: View {
 
                 HStack(spacing: 14) {
                     Metric(label: "总掉电", value: String(format: "%.1f%%", provider.totalDrainPct))
-                    Metric(label: "记录时段", value: "24h")
+                    Metric(label: "估算耗电", value: String(format: "%.0f mAh", provider.deviceProfile.mAh(fromPct: provider.totalDrainPct)))
                     Metric(label: "活跃 App", value: "\(provider.topApps.count)")
                 }
 
@@ -198,7 +202,7 @@ struct TopAppChip: View {
                 Text(app.appName)
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundColor(Color(hex: "#2B2F3A"))
-                Text(String(format: "%.0f", app.energyMAh))
+                Text(String(format: "%.0f mAh", app.energyMAh))
                     .font(.system(size: 11, weight: .medium))
                     .foregroundColor(Color(hex: "#8A90A0"))
             }
@@ -300,7 +304,7 @@ struct AppRow: View {
                         .background(Capsule().fill(Color.white.opacity(0.5)))
                 }
                 Spacer()
-                Text(String(format: "%.0f", app.energyMAh))
+                Text(String(format: "%.0f mAh", app.energyMAh))
                     .font(.system(size: 13, weight: .bold, design: .rounded))
                     .foregroundColor(Color(hex: "#2B2F3A"))
             }
@@ -334,6 +338,10 @@ struct StatusCard: View {
                         .fixedSize(horizontal: false, vertical: true)
                     Spacer()
                 }
+                Text("电池设计容量 \(Int(provider.deviceProfile.batteryCapacityMAh)) mAh · 上方耗电 mAh 为按该容量估算")
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundColor(Color(hex: "#9AA0B0"))
+                    .fixedSize(horizontal: false, vertical: true)
                 Button {
                     provider.refresh()
                     provider.recordSelfSample()
