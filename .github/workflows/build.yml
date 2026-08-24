@@ -21,7 +21,7 @@ jobs:
       - name: Generate Xcode project
         run: xcodegen generate
 
-      - name: Archive (ad-hoc, TrollStore 友好)
+      - name: Archive (无签名, TrollStore 友好)
         run: |
           xcodebuild archive \
             -project BatteryScope.xcodeproj \
@@ -29,9 +29,8 @@ jobs:
             -configuration Release \
             -archivePath build/BatteryScope.xcarchive \
             -destination 'generic/platform=iOS' \
-            CODE_SIGN_IDENTITY="-" \
             CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=YES \
+            CODE_SIGNING_ALLOWED=NO \
             PROVISIONING_PROFILE_SPECIFIER="" \
             ENABLE_BITCODE=NO
 
